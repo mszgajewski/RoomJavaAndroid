@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -52,9 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        binding.getDataButton.setOnClickListener(v -> {
-
-            });
+        binding.getDataButton.setOnClickListener(v -> getPersonInBackground());
     }
 
     public void addPersonInBackground(Person person) {
@@ -65,27 +64,26 @@ public class MainActivity extends AppCompatActivity {
         executorService.execute(() -> {
             personDatabase.getPersonDAO().addPerson(person);
 
-            handler.post(() -> Toast.makeText(MainActivity.this, "Dodano do bazy ", Toast.LENGTH_SHORT).show())
+            handler.post(() -> Toast.makeText(MainActivity.this, "Dodano do bazy ", Toast.LENGTH_SHORT).show());
         });
     }
 
     public void getPersonInBackground() {
 
+        StringBuilder stringBuilder = new StringBuilder();
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
         executorService.execute(() -> {
             personList = personDatabase.getPersonDAO().getAllPerson();
 
-            handler.post(() ->
-                    StringBuilder stringBuilder = new StringBuilder();
-            for (Person p : personList){
-                stringBuilder.append(p.getName() + " : " + p.getAge());
-                stringBuilder.append("\n");
-            }
-
-            String finalData = stringBuilder.toString();
-            Toast.makeText(MainActivity.this, "" + finalData, Toast.LENGTH_SHORT).show();
+            handler.post(() -> {
+                for (Person p : personList) {
+                    stringBuilder.append(p.getName()).append(" : ").append(p.getAge()).append("\n");
+                }
+                String finalData = stringBuilder.toString();
+                Toast.makeText(MainActivity.this, "" + finalData, Toast.LENGTH_SHORT).show();
+            });
         });
     }
 }

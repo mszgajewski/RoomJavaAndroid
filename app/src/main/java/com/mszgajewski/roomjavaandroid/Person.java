@@ -11,8 +11,10 @@ public class Person {
     @ColumnInfo(name = "person_id")
     @PrimaryKey(autoGenerate = true)
     int id;
+
     @ColumnInfo(name = "name")
     String name;
+
     @ColumnInfo(name = "age")
     String age;
 
